@@ -1,12 +1,12 @@
 # roles/ecd/defaults/main.yml
 ---
-openio_ecd_namespace: "OPENIO"
-openio_ecd_serviceid: "0"
+openio_ecd_namespace: "{{ namespace | default('OPENIO') }}"
+openio_ecd_serviceid: "{{ 0 + openio_legacy_serviceid | d(0) | int }}"
 
 openio_ecd_bind_interface: "{{ ansible_default_ipv4.alias }}"
 openio_ecd_bind_address:
-  "{{ hostvars[inventory_hostname]['ansible_' + openio_ecd_bind_interface]['ipv4']['address'] }}"
-
+  "{{ openio_bind_address \
+    | default(hostvars[inventory_hostname]['ansible_' + openio_ecd_bind_interface]['ipv4']['address']) }}"
 openio_ecd_bind_port: 6017
 
 openio_ecd_gridinit_dir: "/etc/gridinit.d/{{ openio_ecd_namespace }}"
