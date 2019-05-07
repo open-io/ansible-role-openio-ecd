@@ -68,12 +68,37 @@
     group: openio
     mode: 0644
 
-- name: restart ecd
+- name: "restart ecd to apply the new configuration"
   shell: |
     gridinit_cmd reload
     gridinit_cmd restart  {{openio_ecd_namespace}}-{{openio_ecd_servicename}}
+  register: _restart_ecd
   when:
-    - _ecd_conf.changed
+    - _ecd_conf is changed
     - not openio_ecd_provision_only
   tags: configure
+
+- block:
+    - name: "Ensure ecd is started"
+      command: gridinit_cmd start {{ openio_ecd_namespace }}-{{ openio_ecd_servicename }}
+      register: _start_ecd
+      changed_when: '"Success" in _start_ecd.stdout'
+      when:
+        - not openio_ecd_provision_only
+        - _restart_ecd is skipped
+      tags: configure
+
+    - name: check ecd
+      uri:
+        url: "http://{{ openio_ecd_bind_address }}:{{ openio_ecd_bind_port }}"
+        method: HEAD
+        status_code: 403
+      register: _ecd_check
+      retries: 3
+      delay: 5
+      until: _ecd_check is success
+      changed_when: false
+      when:
+        - not openio_ecd_provision_only
+  when: openio_bootstrap | d(false)
 ...
