@@ -5,7 +5,9 @@
   with_first_found:
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
-  tags: install
+  tags:
+    - install
+    - configure
 
 - name: "Include {{ ansible_distribution }} tasks"
   include_tasks: "{{ item }}"
@@ -31,7 +33,7 @@
     - path: "/var/log/oio/sds/{{ openio_ecd_namespace }}/{{ openio_ecd_servicename }}"
       owner: "{{ syslog_user }}"
       mode: "0770"
-  tags: install
+  tags: configure
 
 - name: Ensure pid directory is persistant
   lineinfile:
@@ -41,7 +43,7 @@
     owner: openio
     group: openio
     mode: 0644
-  tags: install
+  tags: configure
   when: openio_ecd_pid_directory.split(' ')[0] | dirname is match("/run/.*")
 
 - name: Generate configuration files
@@ -59,6 +61,7 @@
       dest: "{{ openio_ecd_gridinit_dir }}/{{ openio_ecd_gridinit_file_prefix }}\
         {{ openio_ecd_servicename }}.conf"
   register: _ecd_conf
+  tags: configure
 
 - name: Copy WSGI Script
   copy:
@@ -67,6 +70,7 @@
     owner: openio
     group: openio
     mode: 0644
+  tags: configure
 
 - name: "restart ecd to apply the new configuration"
   shell: |
@@ -98,6 +102,7 @@
       delay: 5
       until: _ecd_check is success
       changed_when: false
+      tags: configure
       when:
         - not openio_ecd_provision_only
   when: openio_bootstrap | d(false)
