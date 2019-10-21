@@ -21,7 +21,7 @@ openio_ecd_socket_directory: "/run/oio/sds/{{ openio_ecd_namespace }}/{{ openio_
 
 openio_ecd_version: 'latest'
 
-openio_ecd_wsgi_processes: "{{ ansible_processor_vcpus }}"
+openio_ecd_wsgi_processes: "{{ [(ansible_processor_vcpus | int ), 10] | min }}"
 openio_ecd_wsgi_threads: 1
 openio_ecd_provision_only: false
 ...
