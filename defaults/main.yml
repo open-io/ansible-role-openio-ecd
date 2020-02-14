@@ -1,4 +1,3 @@
-# roles/ecd/defaults/main.yml
 ---
 openio_ecd_namespace: "{{ namespace | default('OPENIO') }}"
 openio_ecd_serviceid: "{{ 0 + openio_legacy_serviceid | d(0) | int }}"
@@ -24,4 +23,11 @@ openio_ecd_version: 'latest'
 openio_ecd_wsgi_processes: "{{ [(ansible_processor_vcpus | int ), 10] | min }}"
 openio_ecd_wsgi_threads: 1
 openio_ecd_provision_only: false
+
+openio_ecd_sysconfig_dir: "/etc/oio/sds/{{ openio_ecd_namespace }}"
+openio_ecd_servicename: "ecd-{{ openio_ecd_serviceid }}"
+
+openio_ecd_definition_file: >
+  "{{ openio_ecd_sysconfig_dir }}/
+  {{ openio_ecd_servicename }}/{{ openio_ecd_servicename }}.conf"
 ...
