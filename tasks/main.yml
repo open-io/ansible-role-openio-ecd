@@ -24,7 +24,6 @@
     group: "{{ item.group | default('openio') }}"
     mode: "{{ item.mode | default(0755) }}"
   with_items:
-    - path: "/etc/gridinit.d/{{ openio_ecd_namespace }}"
     - path: "{{ openio_ecd_sysconfig_dir }}/{{ openio_ecd_servicename }}"
     - path: "{{ openio_ecd_pid_directory }}"
     - path: "{{ openio_ecd_socket_directory }}"
