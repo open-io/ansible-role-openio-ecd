@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/open-io/ansible-role-openio-ecd.svg?branch=master)](https://travis-ci.org/open-io/ansible-role-openio-ecd)
+[![Build Status](https://travis-ci.org/open-io/ansible-role-openio-ecd.svg?branch=20.04)](https://travis-ci.org/open-io/ansible-role-openio-ecd)
 # Ansible role `ecd`
 
 An Ansible role for install and configure ECD. Specifically, the responsibilities of this role are to:
